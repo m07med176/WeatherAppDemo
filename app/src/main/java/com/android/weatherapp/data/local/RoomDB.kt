@@ -1,4 +1,4 @@
-package com.android.weatherapp.local
+package com.android.weatherapp.data.local
 
 import android.content.Context
 import androidx.room.Database
@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 @Database(entities = [Favorite::class], version = 1, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class RoomDB:RoomDatabase() {
-    abstract fun favoriteDao():FavoriteDao
+    abstract fun favoriteDao(): FavoriteDao
 
     companion object {
         @Volatile

@@ -1,7 +1,7 @@
-package com.android.weatherapp.remote
+package com.android.weatherapp.data.remote
 
 import com.android.weatherapp.Constants
-import com.android.weatherapp.models.WeatherResponse
+import com.android.weatherapp.data.models.WeatherResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

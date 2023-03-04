@@ -5,38 +5,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.android.weatherapp.R
+import com.android.weatherapp.data.Repository
 import com.android.weatherapp.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
+    lateinit var viewModel: HomeViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+    ): View? {
+        return inflater.inflate(R.layout.fragment_home,container,false)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val repository = Repository(requireContext())
+        val homeViewModelFactory = HomeViewModelFactory(repository)
+        viewModel = ViewModelProvider(requireActivity(),homeViewModelFactory).get(HomeViewModel::class.java)
+
+
+        viewModel.getWeatherDetails(30.61554342119405, 32.27797547385768)
+
+        viewModel.weatherDetails.observe(viewLifecycleOwner){weather->
+            Toast.makeText(requireContext(), weather.toString(), Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 }

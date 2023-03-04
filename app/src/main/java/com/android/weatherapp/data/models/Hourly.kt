@@ -1,4 +1,4 @@
-package com.android.weatherapp.models
+package com.android.weatherapp.data.models
 
 data class Hourly(
     val clouds: Int,

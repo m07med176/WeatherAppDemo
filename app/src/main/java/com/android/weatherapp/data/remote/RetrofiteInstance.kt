@@ -1,4 +1,4 @@
-package com.android.weatherapp.remote
+package com.android.weatherapp.data.remote
 
 import com.android.weatherapp.Constants
 import okhttp3.OkHttp
@@ -23,7 +23,7 @@ class RetrofiteInstance {
             .build()
     }
 
-    fun apiCall():ApiCalls{
+    fun apiCall(): ApiCalls {
         return retrofit.create(ApiCalls::class.java)
     }
 }
