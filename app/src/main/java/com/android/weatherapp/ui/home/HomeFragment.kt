@@ -42,14 +42,14 @@ class HomeFragment : Fragment() {
             viewModel.weatherDetails.collect{state->
                 when(state){
                     is ApiResponse.OnSuccess -> {
-                        Toast.makeText(requireContext(), state.data.toString(), Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), state.data.toString(), Toast.LENGTH_SHORT).show()
                     }
                     is ApiResponse.OnError -> {
-                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
 
                     }
                     is ApiResponse.OnLoading -> {
-                        Toast.makeText(requireContext(), "Loading...", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), "Loading...", Toast.LENGTH_SHORT).show()
 
                     }
                 }
