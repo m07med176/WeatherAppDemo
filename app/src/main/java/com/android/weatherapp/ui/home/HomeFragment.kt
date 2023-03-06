@@ -9,9 +9,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.android.weatherapp.R
+import com.android.weatherapp.data.ApiResponse
 import com.android.weatherapp.data.Repository
 import com.android.weatherapp.databinding.FragmentHomeBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -33,10 +37,24 @@ class HomeFragment : Fragment() {
 
         viewModel.getWeatherDetails(30.61554342119405, 32.27797547385768)
 
-        viewModel.weatherDetails.observe(viewLifecycleOwner){weather->
-            Toast.makeText(requireContext(), weather.toString(), Toast.LENGTH_SHORT).show()
-        }
 
+        lifecycleScope.launch{
+            viewModel.weatherDetails.collect{state->
+                when(state){
+                    is ApiResponse.OnSuccess -> {
+                        Toast.makeText(requireContext(), state.data.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                    is ApiResponse.OnError -> {
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+
+                    }
+                    is ApiResponse.OnLoading -> {
+                        Toast.makeText(requireContext(), "Loading...", Toast.LENGTH_SHORT).show()
+
+                    }
+                }
+            }
+        }
 
     }
 }

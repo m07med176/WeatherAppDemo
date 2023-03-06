@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.weatherapp.R
 import com.android.weatherapp.data.Repository
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class FavoriteFragment : Fragment() {
 
@@ -31,10 +34,12 @@ class FavoriteFragment : Fragment() {
 
 
         viewModel.getFavoriteList()
-        viewModel.favoriteList.observe(viewLifecycleOwner){favoriteList->
-            Toast.makeText(requireContext(), "length of data is: ${favoriteList.size}", Toast.LENGTH_SHORT).show()
-        }
 
+        lifecycleScope.launch{
+            viewModel.favoriteList.collect{favoriteList->
+                Toast.makeText(requireContext(), "length of data is: ${favoriteList.size}", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 }

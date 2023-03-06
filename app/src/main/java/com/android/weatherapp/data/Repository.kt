@@ -11,6 +11,8 @@ import com.android.weatherapp.data.local.RoomDB
 import com.android.weatherapp.data.models.WeatherResponse
 import com.android.weatherapp.data.remote.ApiCalls
 import com.android.weatherapp.data.remote.RetrofiteInstance
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import retrofit2.http.GET
 
@@ -24,7 +26,7 @@ class Repository(context: Context) {
         room = RoomDB.invoke(context)
     }
 
-    suspend fun getFavorites():List<Favorite>{
+    fun getFavorites(): Flow<List<Favorite>> {
         return room.favoriteDao().getFavorites()
     }
 
@@ -36,11 +38,11 @@ class Repository(context: Context) {
         room.favoriteDao().deleteFavorite(favorite)
     }
 
-    suspend fun getWeatherDetails(
+    fun getWeatherDetails(
         latitude:Double,
         longitude:Double,
         exclude:String?=null
-    ): WeatherResponse{
+    ) = flow {
         val response = network.getWeatherDetails(
             latitude = latitude,
             longitude = longitude,
@@ -48,8 +50,11 @@ class Repository(context: Context) {
         )
 
         if (response.isSuccessful){
-            return response.body()?:WeatherResponse()
+            emit(response.body()?:WeatherResponse())
+        }else{
+            emit(WeatherResponse())
+
         }
-       return  WeatherResponse()
+
     }
 }
