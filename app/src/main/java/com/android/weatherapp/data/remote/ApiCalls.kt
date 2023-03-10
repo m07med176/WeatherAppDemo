@@ -2,6 +2,7 @@ package com.android.weatherapp.data.remote
 
 import com.android.weatherapp.Constants
 import com.android.weatherapp.data.models.WeatherResponse
+import org.intellij.lang.annotations.Language
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -20,6 +21,7 @@ interface ApiCalls {
     suspend fun getWeatherDetails(
         @Query("lat") latitude:Double,
         @Query("lon") longitude:Double,
+        @Query("lang") language: String = "en",
         @Query("appid") apiKey:String = Constants.API_KEY,
         @Query("exclude") exclude:String?=null
     ): Response<WeatherResponse>
