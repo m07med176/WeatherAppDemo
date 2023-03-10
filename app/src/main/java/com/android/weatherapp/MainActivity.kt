@@ -52,8 +52,6 @@ class MainActivity : AppCompatActivity() {
             }else{
                 Toast.makeText(this, "You should enable location", Toast.LENGTH_SHORT).show()
             }
-
-
         }else{
             requestPermission()
         }
