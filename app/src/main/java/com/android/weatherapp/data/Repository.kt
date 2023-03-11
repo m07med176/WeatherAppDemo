@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flow
 class Repository(
     private val remoteDataSource: DataSource,
     private val localDataSource: DataSource
-) {
+) : RepositoryOperations {
 
 
     companion object {
@@ -42,22 +42,22 @@ class Repository(
         }
     }
 
-    fun getFavorites(): Flow<List<Favorite>> {
+    override fun getFavorites(): Flow<List<Favorite>> {
         return localDataSource.getFavorites()
     }
 
-    suspend fun insertFavorite(favorite: Favorite) {
+    override suspend fun insertFavorite(favorite: Favorite) {
         localDataSource.insertFavorite(favorite)
     }
 
-    suspend fun deleteFavorite(favorite: Favorite) {
+    override suspend fun deleteFavorite(favorite: Favorite) {
         localDataSource.deleteFavorite(favorite)
     }
 
-    fun getWeatherDetails(
+    override fun getWeatherDetails(
         latitude: Double,
         longitude: Double,
-        exclude: String? = null,
+        exclude: String?,
     ) = flow {
         val response = remoteDataSource.getWeatherDetails(
             latitude = latitude,

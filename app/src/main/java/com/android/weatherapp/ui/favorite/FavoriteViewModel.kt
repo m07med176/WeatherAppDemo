@@ -5,13 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.weatherapp.data.Repository
+import com.android.weatherapp.data.RepositoryOperations
 import com.android.weatherapp.data.local.Favorite
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class FavoriteViewModel(private val repository: Repository):ViewModel() {
+class FavoriteViewModel(private val repository: RepositoryOperations):ViewModel() {
 
     // State
+
+
+    private val viewModelTest = MutableLiveData<String>()
 
     private val _favoriteList = MutableStateFlow<List<Favorite>>(emptyList())
     val favoriteList:StateFlow<List<Favorite>>
@@ -26,6 +30,13 @@ class FavoriteViewModel(private val repository: Repository):ViewModel() {
         get() = _loading
 
 
+    fun getViewModelForTest():LiveData<String>{
+        return viewModelTest
+    }
+
+    suspend fun insertViewModelTest(item:String){
+        viewModelTest.postValue(item)
+    }
     fun getFavoriteList(){
         viewModelScope.launch {
             repository.getFavorites()

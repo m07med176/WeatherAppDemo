@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.android.weatherapp.R
 import com.android.weatherapp.data.Repository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -28,6 +30,15 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        lifecycleScope.launch{
+            viewModel.favoriteList.collect{favoriteList->
+                Toast.makeText(requireContext(), "length of data is: ${favoriteList.size}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+
         val repository = Repository.getInstance(requireActivity().application)
         val viewModelFactory = FavoriteViewModelFactory(repository = repository)
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(FavoriteViewModel::class.java)
@@ -35,11 +46,7 @@ class FavoriteFragment : Fragment() {
 
         viewModel.getFavoriteList()
 
-        lifecycleScope.launch{
-            viewModel.favoriteList.collect{favoriteList->
-                Toast.makeText(requireContext(), "length of data is: ${favoriteList.size}", Toast.LENGTH_SHORT).show()
-            }
-        }
+
 
     }
 }
