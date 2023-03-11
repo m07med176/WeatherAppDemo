@@ -28,7 +28,7 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val repository = Repository(requireContext())
+        val repository = Repository.getInstance(requireActivity().application)
         val viewModelFactory = FavoriteViewModelFactory(repository = repository)
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(FavoriteViewModel::class.java)
 

@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository = Repository(requireContext())
+        val repository = Repository.getInstance(requireActivity().application)
         val homeViewModelFactory = HomeViewModelFactory(repository)
         viewModel = ViewModelProvider(requireActivity(),homeViewModelFactory).get(HomeViewModel::class.java)
 
