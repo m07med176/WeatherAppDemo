@@ -9,6 +9,7 @@
 
 <!--TODO 1#11 Prepare Permission for Display ON Top and Alarm Notification -->
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -32,6 +33,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--TODO 2.3 Register Service and Implement AlertWindowManager and Notification there-->
+        <service
+            android:name=".ui.alert.AlertService"
+            android:enabled="true"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,7 @@ import com.android.weatherapp.R
 import com.android.weatherapp.data.local.RoomDB
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -27,7 +30,7 @@ import kotlinx.coroutines.launch
  * ### 3. Service [Notification, Display on Top]
  *
  *  __
- * ## Display Alerts & Alert Dialog
+ * ## [1] Display Alerts & Alert Dialog
  * 1. Create Entity of Alert  [AlertModel]
  * 2. Create DAO of Alert Entity [AlertDao]
  *      * get all alerts
@@ -62,6 +65,7 @@ import kotlinx.coroutines.launch
  *      ``` xml
  *          <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
  *          <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+ *          <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
  *           <uses-permission android:name="android.permission.WAKE_LOCK" />
  *           <uses-permission android:name="android.permission.VIBRATE" />
  *      ```
@@ -70,7 +74,25 @@ import kotlinx.coroutines.launch
  *      * Initialize viewModel
  *      * use date picker [Date and Time]
  *      * Collect and Save [AlertModel]
- *
+ * --
+ * ## [2] Service Notification, Display on Top
+ * 1. Design XML of alert display overlay
+ * 2. Implement [AlertWindowManger]
+ *      * inflate view
+ *      * register view in window manager
+ *      * function to close view and remove it from window manager
+ *      * function to close [AlertService]
+ * 3. Register Service and Implement AlertWindowManager and Notification there
+ *      * Create Service class
+ *      * register it in manifest
+ *       ``` xml
+ *          <service
+ *              android:name=".ui.alert.AlertService"
+ *              android:enabled="true"
+ *              android:exported="true" />
+ *         ```
+ *      * Implement Notification and Notification Channel and Display on top if permitted
+ * 4. Create Function TO Intent Service
  */
 
 
@@ -164,6 +186,13 @@ class AlertFragment : Fragment() {
             }
         }
 
+
+        // Start Service Just for test
+        lifecycleScope.launch {
+            delay(5000)
+            startAlertService("this is for test only")
+        }
+
     }
 
 
@@ -188,6 +217,18 @@ class AlertFragment : Fragment() {
                 }.setNegativeButton("No") { dialog: DialogInterface, _: Int ->
                     dialog.dismiss()
                 }.show()
+        }
+    }
+
+
+
+    private fun startAlertService(description: String) {
+        val intent = Intent(requireContext(), AlertService::class.java)
+        intent.putExtra("description", description)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ContextCompat.startForegroundService(requireContext(), intent)
+        } else {
+            requireActivity().startService(intent)
         }
     }
 }
