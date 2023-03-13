@@ -5,11 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-
-@Database(entities = [Favorite::class], version = 1, exportSchema = false)
+import com.android.weatherapp.ui.alert.AlertDao
+import com.android.weatherapp.ui.alert.AlertModel
+// TODO 1#3- Register Entity in room and upgrade level
+@Database(entities = [Favorite::class,AlertModel::class], version = 2, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class RoomDB:RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
+    abstract fun alertDao(): AlertDao
 
     companion object {
         @Volatile
