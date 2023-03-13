@@ -22,4 +22,9 @@
         android:name="com.android.weatherapp.ui.map.MapFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.android.weatherapp.ui.alert.AlertFragment"
+        android:label="fragment_alert"
+        tools:layout="@layout/fragment_alert" />
 </navigation>

@@ -16,4 +16,11 @@
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/title_map" />
 
+<item
+        android:id="@+id/alertFragment"
+        android:icon="@drawable/ic_map"
+        android:title="Alert" />
+
+
+
 </menu>
