@@ -16,7 +16,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkManager
 import com.android.weatherapp.R
+import com.android.weatherapp.data.Repository
 import com.android.weatherapp.data.local.RoomDB
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -25,9 +27,10 @@ import kotlinx.coroutines.launch
 
 /**
  * # Alert System
- * ### 1. Display Alerts & Alert Dialog [AlertDialog] & Alert Settings
- * ### 2. Worker & Time Estimation
- * ### 3. Service [Notification, Display on Top]
+ * ## 1. Display Alerts & Alert Dialog [AlertDialog] & Alert Settings
+ * ## 2. Service [Notification, Display on Top]
+ * ## 3. Worker & Time Estimation
+
  *
  *  __
  * ## [1] Display Alerts & Alert Dialog
@@ -82,6 +85,7 @@ import kotlinx.coroutines.launch
  *      * register view in window manager
  *      * function to close view and remove it from window manager
  *      * function to close [AlertService]
+ *
  * 3. Register Service and Implement AlertWindowManager and Notification there
  *      * Create Service class
  *      * register it in manifest
@@ -93,6 +97,24 @@ import kotlinx.coroutines.launch
  *         ```
  *      * Implement Notification and Notification Channel and Display on top if permitted
  * 4. Create Function TO Intent Service
+ *  * --
+ * ## [3] Worker & Time Estimation
+ * 1. add dependencies of worker
+ *      ``` groovy
+ *      implementation "androidx.work:work-runtime-ktx:2.8.0"
+ *      ```
+ * 2. Create Periodic Worker
+ *      * get data from room or network using repository
+ *      * check time limit from alert model
+ *      * calculate delay of time of [AlertOnTimeWorkManager]
+ *      * register on [oneTimeWorkManager]
+ *      * cancel worker in delete alert item
+ *      * register worker in insert alert item
+ *
+ * 3. Create One Time Worker
+ *      * fetch data from periodic worker
+ *      * intent service of alert
+ *
  */
 
 
@@ -106,10 +128,10 @@ class AlertFragment : Fragment() {
 
 
     private val viewModel: AlertViewModel by lazy {
-        val dao = RoomDB.invoke(requireContext()).alertDao()
+        val repository = Repository.getInstance(requireActivity().application)
         ViewModelProvider(
             requireActivity(),
-            AlertViewModelFactory(dao)
+            AlertViewModelFactory(repository)
         )[AlertViewModel::class.java]
     }
 
@@ -127,6 +149,9 @@ class AlertFragment : Fragment() {
             // On Delete Icon Clicked
             // Should Delete Item
             viewModel.deleteAlert(it)
+            // cancel worker
+            // TODO 3#2 Create Periodic Worker
+            WorkManager.getInstance().cancelAllWorkByTag("${it.id}")
         }
         recyclerView.adapter = adapter
 
@@ -185,14 +210,6 @@ class AlertFragment : Fragment() {
                 checkPermissionOfOverlay()
             }
         }
-
-
-        // Start Service Just for test
-        lifecycleScope.launch {
-            delay(5000)
-            startAlertService("this is for test only")
-        }
-
     }
 
 
@@ -217,18 +234,6 @@ class AlertFragment : Fragment() {
                 }.setNegativeButton("No") { dialog: DialogInterface, _: Int ->
                     dialog.dismiss()
                 }.show()
-        }
-    }
-
-
-
-    private fun startAlertService(description: String) {
-        val intent = Intent(requireContext(), AlertService::class.java)
-        intent.putExtra("description", description)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ContextCompat.startForegroundService(requireContext(), intent)
-        } else {
-            requireActivity().startService(intent)
         }
     }
 }

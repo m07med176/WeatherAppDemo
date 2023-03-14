@@ -11,7 +11,9 @@ import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.work.*
 import com.android.weatherapp.R
+import com.android.weatherapp.data.Repository
 import com.android.weatherapp.data.local.RoomDB
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -34,10 +36,10 @@ class AlertDialog : DialogFragment() {
 
     // Initialize ViewModel
     private val viewModel: AlertViewModel by lazy {
-        val dao = RoomDB.invoke(requireContext()).alertDao()
+        val repository = Repository.getInstance(requireContext())
         ViewModelProvider(
             requireActivity(),
-            AlertViewModelFactory(dao)
+            AlertViewModelFactory(repository)
         )[AlertViewModel::class.java]
     }
 
@@ -78,6 +80,8 @@ class AlertDialog : DialogFragment() {
         lifecycleScope.launch {
             viewModel.stateInsetAlert.collect{id->
                 // Register Worker Here and send ID of alert
+                // TODO 3#2 Create Periodic Worker
+                setPeriodWorkManger(id)
             }
         }
         return view
@@ -176,4 +180,27 @@ class AlertDialog : DialogFragment() {
     }
 
 
+    private fun setPeriodWorkManger(id: Long) {
+
+        val data = Data.Builder()
+        data.putLong("id", id)
+
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(
+            AlertPeriodicWorkManger::class.java,
+            24, TimeUnit.HOURS
+        )
+            .setConstraints(constraints)
+            .setInputData(data.build())
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+            "$id",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            periodicWorkRequest
+        )
+    }
 }

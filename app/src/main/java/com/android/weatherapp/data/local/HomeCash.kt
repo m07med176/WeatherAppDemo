@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.android.weatherapp.data.models.WeatherResponse
 
-@Entity(tableName = "favorite_table")
-data class Favorite(
+@Entity(tableName = "cash_table")
+data class HomeCash(
     @PrimaryKey(autoGenerate = true)
     val id:Int?=null,
 
-    val weather: WeatherResponse
+    val weather: WeatherResponse?=null
 
 )

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.weatherapp.data.Repository
-import com.android.weatherapp.data.local.Favorite
+import com.android.weatherapp.data.local.HomeCash
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -13,9 +13,9 @@ class FavoriteViewModel(private val repository: Repository):ViewModel() {
 
     // State
 
-    private val _favoriteList = MutableStateFlow<List<Favorite>>(emptyList())
-    val favoriteList:StateFlow<List<Favorite>>
-    get() = _favoriteList
+    private val _homeCashList = MutableStateFlow<HomeCash>(HomeCash())
+    val homeCashList:StateFlow<HomeCash>
+    get() = _homeCashList
 
     private val _errorCatch = MutableLiveData<String>()
     val errorCatch:LiveData<String>
@@ -28,26 +28,26 @@ class FavoriteViewModel(private val repository: Repository):ViewModel() {
 
     fun getFavoriteList(){
         viewModelScope.launch {
-            repository.getFavorites()
+            repository.getHomeCash()
                 .catch {
                     _errorCatch.value = it.message
                 }
                 .collect{favoriteList->
-                _favoriteList.value = favoriteList
+                _homeCashList.value = favoriteList
             }
 
         }
     }
 
-    fun deleteFavorite(favorite: Favorite){
+    fun deleteFavorite(homeCash: HomeCash){
         viewModelScope.launch {
-            repository.deleteFavorite(favorite)
+            repository.deleteHomeCash(homeCash)
         }
     }
 
-    fun insertFavorite(favorite: Favorite){
+    fun insertFavorite(homeCash: HomeCash){
         viewModelScope.launch{
-            repository.insertFavorite(favorite)
+            repository.insertHomeCash(homeCash)
         }
     }
 

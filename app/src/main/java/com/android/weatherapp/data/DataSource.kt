@@ -1,20 +1,22 @@
 package com.android.weatherapp.data
 
 
+
 import com.android.weatherapp.Constants
-import com.android.weatherapp.data.local.Favorite
+import com.android.weatherapp.data.local.HomeCash
 import com.android.weatherapp.data.models.WeatherResponse
+import com.android.weatherapp.ui.alert.AlertModel
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 interface DataSource {
 
     // Favorite Dao
-    fun getFavorites(): Flow<List<Favorite>>
+    fun getHomeCash(): Flow<HomeCash>
 
-    suspend fun insertFavorite(favorite: Favorite)
+    suspend fun insertHomeCash(homeCash: HomeCash)
 
-    suspend fun deleteFavorite(favorite: Favorite)
+    suspend fun deleteHomeCash(homeCash: HomeCash)
 
     // Network
     suspend fun getWeatherDetails(
@@ -24,4 +26,13 @@ interface DataSource {
         apiKey: String = Constants.API_KEY,
         exclude: String? = null,
     ): Response<WeatherResponse>
+
+    // Alert DAO
+    fun getAlerts(): Flow<List<AlertModel>>
+
+    suspend fun insertAlert(alert: AlertModel):Long
+
+    suspend fun deleteAlert(id: Int)
+
+    suspend fun getAlert(id: Int): AlertModel
 }

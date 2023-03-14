@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.android.weatherapp.data.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 
 // TODO 1#8 Create ViewModel of Alert & ViewModelFactory
-class AlertViewModel(private val dao:AlertDao /* You Should to put Repository in your project*/):ViewModel() {
+class AlertViewModel(private val repository: Repository):ViewModel() {
 
     private val _stateGetAlert = MutableStateFlow<List<AlertModel>>(emptyList())
     val stateGetAlert: StateFlow<List<AlertModel>>
@@ -32,7 +33,7 @@ class AlertViewModel(private val dao:AlertDao /* You Should to put Repository in
 
     fun getAlerts(){
         viewModelScope.launch {
-            dao.getAlerts().collect{
+            repository.getAlerts().collect{
                 _stateGetAlert.value = it
             }
         }
@@ -41,7 +42,7 @@ class AlertViewModel(private val dao:AlertDao /* You Should to put Repository in
     fun insertAlert(alert: AlertModel){
         viewModelScope.launch {
             // After Insert Model get id
-            val id = dao.insertAlert(alert)
+            val id = repository.insertAlert(alert)
 
             // Pass Id in state flow
             _stateInsetAlert.value = id
@@ -51,14 +52,14 @@ class AlertViewModel(private val dao:AlertDao /* You Should to put Repository in
     fun deleteAlert(alert: AlertModel){
         viewModelScope.launch {
             // Pass ID of Alert Model
-            dao.deleteAlert(alert.id?:-1)
+            repository.deleteAlert(alert.id?:-1)
         }
     }
 
     fun getAlert(id: Int){
         viewModelScope.launch {
             // Get Alert By ID
-            val alertModel  = dao.getAlert(id)
+            val alertModel  = repository.getAlert(id)
             _stateSingleAlert.value = alertModel
         }
     }

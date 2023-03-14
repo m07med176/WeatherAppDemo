@@ -1,17 +1,14 @@
 package com.android.weatherapp.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import com.android.weatherapp.MainCoroutineRule
-import com.android.weatherapp.data.local.Favorite
+import com.android.weatherapp.data.local.HomeCash
 import com.android.weatherapp.data.models.WeatherResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
-import org.hamcrest.core.IsEqual
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,11 +34,11 @@ class RepositoryTest {
         daily = emptyList()
     )
 
-    private var favoriteList: MutableList<Favorite> = mutableListOf<Favorite>(
-        Favorite(id = 1, weather = weatherResponse),
-        Favorite(id = 2, weather = weatherResponse),
-        Favorite(id = 3, weather = weatherResponse),
-        Favorite(id = 4, weather = weatherResponse),
+    private var homeCashLists: MutableList<HomeCash> = mutableListOf<HomeCash>(
+        HomeCash(id = 1, weather = weatherResponse),
+        HomeCash(id = 2, weather = weatherResponse),
+        HomeCash(id = 3, weather = weatherResponse),
+        HomeCash(id = 4, weather = weatherResponse),
     )
 
     private lateinit var remoteDataSource: FakeDataSource
@@ -51,8 +48,8 @@ class RepositoryTest {
 
     @Before
     fun initializeRepo(){
-        remoteDataSource = FakeDataSource(favoriteList, weatherResponse)
-        localDataSource = FakeDataSource(favoriteList, weatherResponse)
+        remoteDataSource = FakeDataSource(homeCashLists, weatherResponse)
+        localDataSource = FakeDataSource(homeCashLists, weatherResponse)
         repository = Repository(
             remoteDataSource,
             localDataSource
@@ -62,35 +59,35 @@ class RepositoryTest {
     fun getFavorites_Nothing_resultOfFavoriteListIsSameSize() = mainCoroutineRule.runBlockingTest {
         // Given
         // When: request all  favorite list in room in repository
-        val resutls = repository.getFavorites().first()
+        val resutls = repository.getHomeCash().first()
 
         // Then: size of favorite list will be same size 4
-        assertThat(resutls.size,`is`(favoriteList.size))
+        assertThat(resutls.size,`is`(homeCashLists.size))
     }
 
     @ExperimentalCoroutinesApi
     @Test
     fun insertFavorite_insertItem_increaseSizeOfList() = mainCoroutineRule.runBlockingTest{
         // Given: item of favorite
-        val item = Favorite(id = 5, weather = weatherResponse)
+        val item = HomeCash(id = 5, weather = weatherResponse)
 
         // When: insert favorite in room in repository
-        repository.insertFavorite(item)
+        repository.insertHomeCash(item)
 
         // Then: size of favorite list will be 5
-        assertThat(favoriteList.size,`is`(5))
+        assertThat(homeCashLists.size,`is`(5))
     }
 
     @Test
     fun deleteFavorite_deleteItem_decreaseSizeOfList() = mainCoroutineRule.runBlockingTest{
         // Given:  single item of favorite
-        val item = favoriteList[0]
+        val item = homeCashLists[0]
 
         // When: delete favorite in room in repository
-        repository.deleteFavorite(item)
+        repository.deleteHomeCash(item)
 
         // Then: size of favorite list will be 3
-        assertThat(favoriteList.size,`is`(3))
+        assertThat(homeCashLists.size,`is`(3))
     }
 
     @Test

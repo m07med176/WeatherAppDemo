@@ -1,17 +1,14 @@
 package com.android.weatherapp.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.weatherapp.data.ApiResponse
 import com.android.weatherapp.data.Repository
-import com.android.weatherapp.data.local.Favorite
+import com.android.weatherapp.data.local.HomeCash
 import com.android.weatherapp.data.models.WeatherResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: Repository):ViewModel() {
@@ -28,9 +25,11 @@ class HomeViewModel(private val repository: Repository):ViewModel() {
 
         viewModelScope.launch {
             repository.getWeatherDetails(latitude,longitude,exclude)
-                .catch { _weatherDetails.value = ApiResponse.OnError(it.message.toString() ) }
+                .catch {
+                    _weatherDetails.value = ApiResponse.OnError(it.message.toString() )
+                }
                 .collect{
-                    repository.insertFavorite(Favorite(weather = it))
+                    repository.insertHomeCash(HomeCash(weather = it))
                     _weatherDetails.value = ApiResponse.OnSuccess(it)
                 }
 

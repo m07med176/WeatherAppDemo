@@ -2,7 +2,6 @@ package com.android.weatherapp
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
@@ -11,23 +10,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.android.weatherapp.data.Repository
 import com.android.weatherapp.databinding.ActivityMainBinding
-import com.android.weatherapp.data.local.Favorite
-import com.android.weatherapp.data.local.RoomDB
-import com.android.weatherapp.data.remote.RetrofiteInstance
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 const val PERMISSION_REQUEST = 565
 class MainActivity : AppCompatActivity() {

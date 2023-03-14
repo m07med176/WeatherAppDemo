@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert
 import org.hamcrest.collection.IsEmptyCollection
-import org.hamcrest.core.Is
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsNull
 import org.junit.Assert.*
@@ -26,13 +25,13 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class FavoriteDaoTest {
+class HomeDaoTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
     lateinit var db:RoomDB
-    lateinit var dao: FavoriteDao
+    lateinit var dao: HomeDao
     @Before
     fun initDB() {
         // initialize database
@@ -42,7 +41,7 @@ class FavoriteDaoTest {
         ).
         allowMainThreadQueries().build()
 
-        dao = db.favoriteDao()
+        dao = db.homeCashDao()
     }
 
     @After
@@ -55,27 +54,27 @@ class FavoriteDaoTest {
     @Test
     fun getFavorites_insertFavoriteItems_countOfItemsSame() = runBlockingTest {
         // Given
-        val data1 = Favorite(
+        val data1 = HomeCash(
             id = 1,
             weather = WeatherResponse()
         )
-        dao.insertFavorite(data1)
+        dao.insertHomeCash(data1)
 
-        val data2 = Favorite(
+        val data2 = HomeCash(
             id = 2,
             weather = WeatherResponse()
         )
-        dao.insertFavorite(data2)
+        dao.insertHomeCash(data2)
 
 
-        val data3 = Favorite(
+        val data3 = HomeCash(
             id = 3,
             weather = WeatherResponse()
         )
-        dao.insertFavorite(data3)
+        dao.insertHomeCash(data3)
 
         // When
-        val results = dao.getFavorites().first()
+        val results = dao.getHomeCash().first()
 
         // Then
         MatcherAssert.assertThat(results.size, `is`(3))
@@ -85,15 +84,15 @@ class FavoriteDaoTest {
     @Test
     fun insertFavorite_insertSingleItem_returnItem() = runBlockingTest{
         // Given
-        val data1 = Favorite(
+        val data1 = HomeCash(
             id = 1,
             weather = WeatherResponse()
         )
         // When
-        dao.insertFavorite(data1)
+        dao.insertHomeCash(data1)
 
         // Then
-        val results = dao.getFavorites().first()
+        val results = dao.getHomeCash().first()
         MatcherAssert.assertThat(results[0], IsNull.notNullValue())
 
     }
@@ -101,15 +100,15 @@ class FavoriteDaoTest {
     @Test
     fun deleteFavorite_deleteItem_checkIsNull() = runBlockingTest {
         // Given
-        val data1 = Favorite(
+        val data1 = HomeCash(
             id = 1,
             weather = WeatherResponse()
         )
-        dao.insertFavorite(data1)
+        dao.insertHomeCash(data1)
         // When
-        dao.deleteFavorite(data1)
+        dao.deleteHomeCash(data1)
         // Then
-        val results = dao.getFavorites().first()
+        val results = dao.getHomeCash().first()
         assertThat(results, IsEmptyCollection.empty())
         assertThat(results.size,`is`(0))
     }

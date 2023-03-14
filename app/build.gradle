@@ -96,5 +96,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 
-
+    // TODO 3#1 add dependencies of worker
+    implementation "androidx.work:work-runtime-ktx:2.8.0"
 }
